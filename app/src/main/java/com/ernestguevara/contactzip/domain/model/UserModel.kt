@@ -2,7 +2,7 @@ package com.ernestguevara.contactzip.domain.model
 
 import com.ernestguevara.contactzip.data.local.ContactEntity
 
-data class ContactModel(
+data class UserModel(
     val id: Int? = null,
     val firstName: String? = null,
     val lastName: String? = null,
