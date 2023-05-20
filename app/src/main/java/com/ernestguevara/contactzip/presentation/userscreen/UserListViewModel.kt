@@ -1,17 +1,16 @@
-package com.ernestguevara.contactzip.presentation
+package com.ernestguevara.contactzip.presentation.userscreen
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
+import com.ernestguevara.contactzip.presentation.BaseViewModel
 import com.ernestguevara.contactzip.util.RequestState
 import com.ernestguevara.contactzip.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel

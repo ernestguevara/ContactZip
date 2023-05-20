@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ContactZip</string>
+
+    <string name="menu_user">Users</string>
+    <string name="menu_contact">Contacts</string>
+
+    <string name="label_users">People You May Know</string>
+    <string name="label_contact">Contact List</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
