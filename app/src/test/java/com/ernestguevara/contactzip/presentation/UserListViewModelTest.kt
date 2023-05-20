@@ -6,6 +6,7 @@ import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import com.ernestguevara.contactzip.getOrAwaitValue
+import com.ernestguevara.contactzip.presentation.userscreen.UserListViewModel
 import com.ernestguevara.contactzip.util.Resource
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi

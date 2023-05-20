@@ -8,6 +8,7 @@ import com.ernestguevara.contactzip.data.usecase.DbUseCaseDeleteContactImpl
 import com.ernestguevara.contactzip.data.usecase.DbUseCaseGetContactListImpl
 import com.ernestguevara.contactzip.data.usecase.DbUseCaseInsertContactImpl
 import com.ernestguevara.contactzip.getOrAwaitValue
+import com.ernestguevara.contactzip.presentation.contactscreen.ContactListViewModel
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -17,14 +18,14 @@ import org.junit.Test
 import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
-class ContactViewModelTest {
+class ContactListViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val mainCoroutineRule = MainCoroutineRule()
 
-    private lateinit var mockViewModel: ContactViewModel
+    private lateinit var mockListViewModel: ContactListViewModel
     private lateinit var mockContactRepository: MockContactRepository
 
     private lateinit var dbUseCaseInsertContact: DbUseCaseInsertContactImpl
@@ -39,8 +40,8 @@ class ContactViewModelTest {
         dbUseCaseDeleteContact = DbUseCaseDeleteContactImpl(mockContactRepository)
         dbUseCaseGetContactList = DbUseCaseGetContactListImpl(mockContactRepository)
 
-        mockViewModel =
-            ContactViewModel(
+        mockListViewModel =
+            ContactListViewModel(
                 dbUseCaseInsertContact,
                 dbUseCaseDeleteContact,
                 dbUseCaseGetContactList
@@ -53,15 +54,15 @@ class ContactViewModelTest {
         val contactItem = provideContact(1)[0]
 
         //Call the ViewModel method
-        mockViewModel.insertContact(contactItem)
+        mockListViewModel.insertContact(contactItem)
 
         //Get inserted values
-        mockViewModel.getContactList()
+        mockListViewModel.getContactList()
 
         val expectedValue = mutableListOf<ContactEntity>()
 
         //Observe the value
-        mockViewModel.getContactListValue.getOrAwaitValue().apply {
+        mockListViewModel.getContactListValue.getOrAwaitValue().apply {
             expectedValue.addAll(this)
         }
 
@@ -73,18 +74,18 @@ class ContactViewModelTest {
     fun `should delete contact`() = mainCoroutineRule.runBlockingTest {
         //Prepare Data
         val contactItem = provideContact(1)[0]
-        mockViewModel.insertContact(contactItem)
+        mockListViewModel.insertContact(contactItem)
 
         //Call the ViewModel method
-        mockViewModel.deleteContact(contactItem)
+        mockListViewModel.deleteContact(contactItem)
 
         //Get inserted values
-        mockViewModel.getContactList()
+        mockListViewModel.getContactList()
 
         val expectedValue = mutableListOf<ContactEntity>()
 
         //Observe the value
-        mockViewModel.getContactListValue.getOrAwaitValue().apply {
+        mockListViewModel.getContactListValue.getOrAwaitValue().apply {
             expectedValue.addAll(this)
         }
 
@@ -97,16 +98,16 @@ class ContactViewModelTest {
         //Prepare and call ViewModel method
         val contactList = provideContact(4, true)
         contactList.forEach {
-            mockViewModel.insertContact(it)
+            mockListViewModel.insertContact(it)
         }
 
         //Get inserted values
-        mockViewModel.getContactList()
+        mockListViewModel.getContactList()
 
         val expectedValue = mutableListOf<ContactEntity>()
 
         //Observe the value
-        mockViewModel.getContactListValue.getOrAwaitValue().apply {
+        mockListViewModel.getContactListValue.getOrAwaitValue().apply {
             expectedValue.addAll(this)
         }
 
@@ -119,17 +120,17 @@ class ContactViewModelTest {
         //Prepare and call ViewModel method
         val contactList = provideContact(4, true)
         contactList.forEach {
-            mockViewModel.insertContact(it)
+            mockListViewModel.insertContact(it)
         }
 
 
         //Get inserted values
-        mockViewModel.getContactList()
+        mockListViewModel.getContactList()
 
         val expectedValue = mutableListOf<ContactEntity>()
 
         //Observe the value
-        mockViewModel.getContactListValue.getOrAwaitValue().apply {
+        mockListViewModel.getContactListValue.getOrAwaitValue().apply {
             expectedValue.addAll(this)
         }
 
