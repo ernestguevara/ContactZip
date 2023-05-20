@@ -2,7 +2,7 @@ package com.ernestguevara.contactzip.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ernestguevara.contactzip.domain.model.ContactModel
+import com.ernestguevara.contactzip.domain.model.UserModel
 
 @Entity(tableName = "contact_items")
 data class ContactEntity(
@@ -16,8 +16,8 @@ data class ContactEntity(
     var number: String? = null,
     var isLocallyStored: Boolean? = null
 ) {
-    fun toModel(): ContactModel {
-        return ContactModel(
+    fun toModel(): UserModel {
+        return UserModel(
             id = id,
             firstName = firstName,
             lastName = lastName,

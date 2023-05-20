@@ -12,5 +12,5 @@ interface ContactDao {
     suspend fun deleteContact(contactEntity: ContactEntity)
 
     @Query("SELECT * FROM contact_items WHERE isLocallyStored = :isLocallyStored")
-    fun getAllContacts(isLocallyStored: Boolean? = true): Flow<List<ContactEntity>>
+    fun getAllContacts(isLocallyStored: Boolean = true): Flow<List<ContactEntity>>
 }

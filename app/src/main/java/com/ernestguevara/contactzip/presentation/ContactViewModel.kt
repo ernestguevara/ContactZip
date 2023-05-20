@@ -1,0 +1,39 @@
+package com.ernestguevara.contactzip.presentation
+
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.ernestguevara.contactzip.data.local.ContactEntity
+import com.ernestguevara.contactzip.domain.usecase.DbUseCaseDeleteContact
+import com.ernestguevara.contactzip.domain.usecase.DbUseCaseGetContactList
+import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ContactViewModel @Inject constructor(
+    private val dbUseCaseInsertContact: DbUseCaseInsertContact,
+    private val dbUseCaseDeleteContact: DbUseCaseDeleteContact,
+    private val dbUseCaseGetContactList: DbUseCaseGetContactList
+) : BaseViewModel() {
+
+
+    private val _getContactListValue = MutableLiveData<List<ContactEntity>>(emptyList())
+    val getContactListValue: MutableLiveData<List<ContactEntity>> = _getContactListValue
+
+
+    fun insertContact(contactEntity: ContactEntity) = viewModelScope.launch {
+        dbUseCaseInsertContact.execute(contactEntity)
+    }
+
+    fun deleteContact(contactEntity: ContactEntity) = viewModelScope.launch {
+        dbUseCaseDeleteContact.execute(contactEntity)
+    }
+
+    fun getContactList(isLocallyStored: Boolean = true) = viewModelScope.launch {
+        dbUseCaseGetContactList.execute(isLocallyStored)
+            .collect { result ->
+                _getContactListValue.postValue(result)
+            }
+    }
+}

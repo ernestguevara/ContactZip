@@ -2,7 +2,6 @@ package com.ernestguevara.contactzip.data.local
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
-import com.ernestguevara.contactzip.MainCoroutineRule
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -26,9 +25,6 @@ class ContactsDaoTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
-
     @Inject
     @Named("test_db")
     lateinit var mockDb: ContactDatabase
@@ -49,7 +45,7 @@ class ContactsDaoTest {
     }
 
     @Test
-    fun testInsertContact() = mainCoroutineRule.runBlockingTest {
+    fun testInsertContact() = runBlockingTest {
         //Prepare data
         val contact = provideContact(1)[0]
 
@@ -57,14 +53,14 @@ class ContactsDaoTest {
         dao.insertContact(contact)
 
         //Get database data
-        val result = collectWeatherFlow(this, dao.getAllContacts())
+        val result = collectContactFlow(this, dao.getAllContacts())
 
         //Assert that expected value
         assertThat(result).contains(contact)
     }
 
     @Test
-    fun testDeleteContact() = mainCoroutineRule.runBlockingTest {
+    fun testDeleteContact() = runBlockingTest {
         //Prepare data
         val contact = provideContact(1)[0]
         dao.insertContact(contact)
@@ -73,14 +69,14 @@ class ContactsDaoTest {
         dao.deleteContact(contact)
 
         //Get database data
-        val result = collectWeatherFlow(this, dao.getAllContacts())
+        val result = collectContactFlow(this, dao.getAllContacts())
 
         //Assert that expected value
         assertThat(result).doesNotContain(contact)
     }
 
     @Test
-    fun testGetLocallyStored() = mainCoroutineRule.runBlockingTest {
+    fun testGetLocallyStored() = runBlockingTest {
         //Prepare data
         val contact = provideContact(3)
         contact.forEach {
@@ -88,14 +84,14 @@ class ContactsDaoTest {
         }
 
         //Get database data
-        val result = collectWeatherFlow(this, dao.getAllContacts())
+        val result = collectContactFlow(this, dao.getAllContacts())
 
         //Assert that expected value
         assertThat(result).hasSize(3)
     }
 
     @Test
-    fun testGetStoredOnline() = mainCoroutineRule.runBlockingTest {
+    fun testGetStoredOnline() = runBlockingTest {
         //Prepare data
         val contact = provideContact(3, false)
         contact.forEach {
@@ -103,14 +99,14 @@ class ContactsDaoTest {
         }
 
         //Get database data and set to false
-        val result = collectWeatherFlow(this, dao.getAllContacts(false))
+        val result = collectContactFlow(this, dao.getAllContacts(false))
 
         //Assert that expected value
         assertThat(result).hasSize(3)
     }
 
     //Create reusable async parsing
-    private suspend fun collectWeatherFlow(
+    private suspend fun collectContactFlow(
         scope: CoroutineScope,
         flow: Flow<List<ContactEntity>>
     ): List<ContactEntity> {
@@ -130,7 +126,7 @@ class ContactsDaoTest {
     }
 
     //Create a dynamic entity provider
-    private fun provideContact(count: Int, isLocallyStored: Boolean? = true): List<ContactEntity> {
+    private fun provideContact(count: Int, isLocallyStored: Boolean = true): List<ContactEntity> {
         val list = mutableListOf<ContactEntity>()
         for (i in 1..count) {
             list.add(
