@@ -10,8 +10,6 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.ItemContactBinding
-import com.google.gson.Gson
-import timber.log.Timber
 import javax.inject.Inject
 
 class ContactListAdapter @Inject constructor(

@@ -22,7 +22,7 @@ class MockContactRepository : ContactRepository {
         savedContacts.remove(contactEntity)
     }
 
-    override fun getContactList(isLocal: Boolean): Flow<List<ContactEntity>> {
+    override fun getContactList(): Flow<List<ContactEntity>> {
         return flow { emit(savedContacts) }
     }
 }

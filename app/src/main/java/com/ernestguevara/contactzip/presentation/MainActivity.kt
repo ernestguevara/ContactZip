@@ -8,13 +8,12 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ernestguevara.contactzip.R
-import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.ActivityMainBinding
+import com.ernestguevara.contactzip.presentation.components.LoadingDialog
 import com.ernestguevara.contactzip.presentation.components.disableTooltip
 import com.ernestguevara.contactzip.presentation.userscreen.UserListViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), MainActivityListener {
@@ -23,10 +22,10 @@ class MainActivity : AppCompatActivity(), MainActivityListener {
 
     private lateinit var binding: ActivityMainBinding
 
+    private lateinit var loadingDialog: LoadingDialog
+
     lateinit var navController: NavController
     lateinit var bottomNavigationView: BottomNavigationView
-
-    var isDialogShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +39,19 @@ class MainActivity : AppCompatActivity(), MainActivityListener {
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         bottomNavigationView.setupWithNavController(navController)
         bottomNavigationView.disableTooltip()
+
+        loadingDialog = LoadingDialog(this)
     }
 
     override fun setToolbarTitle(title: String) {
         binding.toolbarTitle.text = title
+    }
+
+    override fun showLoadingDialog() {
+        loadingDialog.show()
+    }
+
+    override fun dismissLoadingDialog() {
+        loadingDialog.dismiss()
     }
 }

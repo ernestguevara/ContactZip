@@ -96,7 +96,7 @@ class ContactListViewModelTest {
     @Test
     fun `should get contact list locally`() = mainCoroutineRule.runBlockingTest {
         //Prepare and call ViewModel method
-        val contactList = provideContact(4, true)
+        val contactList = provideContact(4)
         contactList.forEach {
             mockListViewModel.insertContact(it)
         }
@@ -118,7 +118,7 @@ class ContactListViewModelTest {
     @Test
     fun `should get contact list online`() = mainCoroutineRule.runBlockingTest {
         //Prepare and call ViewModel method
-        val contactList = provideContact(4, true)
+        val contactList = provideContact(4)
         contactList.forEach {
             mockListViewModel.insertContact(it)
         }
@@ -139,7 +139,7 @@ class ContactListViewModelTest {
     }
 
     //Create a dynamic entity provider
-    private fun provideContact(count: Int, isLocallyStored: Boolean = true): List<ContactEntity> {
+    private fun provideContact(count: Int): List<ContactEntity> {
         val list = mutableListOf<ContactEntity>()
         for (i in 1..count) {
             list.add(
@@ -150,8 +150,7 @@ class ContactListViewModelTest {
                     lastName = "lastName$i",
                     avatar = "avatar$i",
                     email = "email$i",
-                    number = "number$i",
-                    isLocallyStored = isLocallyStored
+                    number = "number$i"
                 )
             )
         }

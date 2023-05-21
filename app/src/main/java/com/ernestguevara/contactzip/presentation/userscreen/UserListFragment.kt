@@ -1,7 +1,6 @@
 package com.ernestguevara.contactzip.presentation.userscreen
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ernestguevara.contactzip.BaseFragment
 import com.ernestguevara.contactzip.R
 import com.ernestguevara.contactzip.databinding.FragmentUserListBinding
+import com.ernestguevara.contactzip.presentation.MainActivity
 import com.ernestguevara.contactzip.presentation.components.adapters.ContactListAdapter
-import com.ernestguevara.contactzip.util.Constants.STARTING_PAGE
+import com.ernestguevara.contactzip.util.RequestState
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -30,8 +30,9 @@ class UserListFragment : BaseFragment() {
     lateinit var contactAdapter: ContactListAdapter
 
     private lateinit var mLayoutManager: LinearLayoutManager
-    private var isLoading = false
+
     private var shouldPaginate = true
+    private var isRefreshing = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,9 +70,16 @@ class UserListFragment : BaseFragment() {
                 val visibleItemCount = mLayoutManager.childCount
                 val totalItemCount = mLayoutManager.itemCount
                 val firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition()
-                if (dy > 0 && !isLoading && shouldPaginate && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
+
+                //Check if scrolled down to last item and pagination is active
+                if (dy > 0 && shouldPaginate
+                    && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0
+                ) {
                     // Load more data
                     viewModel.getUsers()
+                    /**
+                     * Add more checker here if persistence no pagination
+                     */
                 }
             }
         })
@@ -79,10 +87,9 @@ class UserListFragment : BaseFragment() {
 
     private fun observeViewModel() {
         viewModel.getUserValue.observe(viewLifecycleOwner) { list ->
-            Timber.i("ernesthor24 observe ${Gson().toJson(list)}")
             if (!list.isNullOrEmpty()) {
                 contactAdapter.appendData(list.map {
-                    it.toEntity()
+                    it.toContactEntity()
                 })
 
                 binding.swipeRefresh.isRefreshing = false
@@ -95,6 +102,15 @@ class UserListFragment : BaseFragment() {
 
         viewModel.endOfPaginationValue.observe(viewLifecycleOwner) {
             shouldPaginate = it
+        }
+
+        viewModel.state.observe(viewLifecycleOwner) {
+            when (it) {
+                RequestState.Loading -> (activity as MainActivity).showLoadingDialog()
+                RequestState.Failed,
+                RequestState.Finished -> (activity as MainActivity).dismissLoadingDialog()
+                else -> {}
+            }
         }
     }
 

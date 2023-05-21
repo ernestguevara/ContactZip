@@ -31,6 +31,9 @@ class UserListViewModel @Inject constructor(
     private val _endOfPaginationValue = MutableLiveData<Boolean>()
     val endOfPaginationValue: MutableLiveData<Boolean> = _endOfPaginationValue
 
+    private val _refreshValue = MutableLiveData<Boolean>(false)
+    val refreshValue: MutableLiveData<Boolean> = _refreshValue
+
     private var queryJob: Job? = null
 
     private var currentPage: Int = STARTING_PAGE
@@ -53,7 +56,7 @@ class UserListViewModel @Inject constructor(
                             results.data?.let { list ->
                                 _getUserValue.value = list
                                 list.forEach { user ->
-                                    dbUseCaseInsertContact.execute(user.toEntity())
+                                    dbUseCaseInsertContact.execute(user.toContactEntity())
                                 }
                                 currentPage++
                             }
@@ -63,7 +66,18 @@ class UserListViewModel @Inject constructor(
                             _state.value = RequestState.Failed
                             results.message?.let {
                                 _getUserError.value = it
-                                _endOfPaginationValue.postValue(it != ERROR_PAGINATION)
+                                _endOfPaginationValue.value = it != ERROR_PAGINATION
+                            }
+
+                            //Check if theres a persistence data
+                            results.data?.let {
+                                //Now check if the list already has data
+                                if (_getUserValue.value == null || _refreshValue.value == true) {
+                                    _getUserValue.value = it
+                                }
+                                _endOfPaginationValue.value = false
+                            } ?: run {
+                                _endOfPaginationValue.value = true
                             }
                         }
 
@@ -78,12 +92,14 @@ class UserListViewModel @Inject constructor(
                 _state.value = RequestState.Failed
                 _getUserError.value = e.localizedMessage
             }
+            _refreshValue.value = false
         }
     }
 
     fun resetPagination() {
         currentPage = STARTING_PAGE
-        _endOfPaginationValue.postValue(true)
+        _refreshValue.value = true
+        _endOfPaginationValue.value = true
         getUsers()
     }
 }

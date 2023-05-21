@@ -4,16 +4,14 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ernestguevara.contactzip.domain.model.UserModel
 
-@Entity(tableName = "contact_items")
-data class ContactEntity(
-    @PrimaryKey(autoGenerate = true)
-    val dbId: Int? = null,
+@Entity(tableName = "user_item")
+data class UserEntity(
+    @PrimaryKey(autoGenerate = false)
     val id: Int? = null,
     var firstName: String? = null,
     var lastName: String? = null,
     var avatar: String? = null,
     var email: String? = null,
-    var number: String? = null
 ) {
     fun toModel(): UserModel {
         return UserModel(
