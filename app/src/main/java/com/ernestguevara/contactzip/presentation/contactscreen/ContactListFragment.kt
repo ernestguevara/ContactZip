@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.ernestguevara.contactzip.BaseFragment
+import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.FragmentContactListBinding
 import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,8 +30,6 @@ class ContactListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        contactViewModel.getContactList()
-
         contactViewModel.getContactListValue.observe(viewLifecycleOwner) {
             Timber.i("ernesthor24 ${Gson().toJson(it)}")
         }

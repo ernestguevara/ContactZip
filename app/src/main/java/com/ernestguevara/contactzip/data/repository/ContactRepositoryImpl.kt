@@ -33,8 +33,13 @@ class ContactRepositoryImpl @Inject constructor(
     override fun getUsers(page: Int): Flow<Resource<List<UserModel>>> = flow {
         emit(Resource.Loading())
 
-        val userModels = dao.getUsers().map {
-            it.toModel()
+        val userEntities = dao.getUsers()
+        val userModels = if (userEntities.isNotEmpty()) {
+            userEntities.map {
+                it.toModel()
+            }
+        } else {
+            null
         }
 
         emit(Resource.Loading(userModels))

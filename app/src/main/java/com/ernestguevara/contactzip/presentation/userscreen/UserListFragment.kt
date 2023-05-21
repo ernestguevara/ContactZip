@@ -17,7 +17,10 @@ import com.ernestguevara.contactzip.presentation.components.AddContactDialogFrag
 import com.ernestguevara.contactzip.presentation.components.AddContactListener
 import com.ernestguevara.contactzip.presentation.components.adapters.ContactListAdapter
 import com.ernestguevara.contactzip.util.RequestState
+import com.ernestguevara.contactzip.util.makeVisibleOrGone
+import com.ernestguevara.contactzip.util.makeVisibleOrInvisible
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -55,6 +58,7 @@ class UserListFragment : BaseFragment(), AddContactListener {
 
         contactAdapter.setItemClickListener {
             val addDialog = AddContactDialogFragment.newInstance(it)
+            addDialog.setListener(this)
             addDialog.show(parentFragmentManager, "add_dialog")
         }
     }
@@ -89,13 +93,13 @@ class UserListFragment : BaseFragment(), AddContactListener {
                 contactAdapter.appendData(list.map {
                     it.toContactEntity()
                 })
-
                 binding.swipeRefresh.isRefreshing = false
             }
         }
 
         viewModel.getUserError.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            binding.swipeRefresh.isRefreshing = false
         }
 
         viewModel.endOfPaginationValue.observe(viewLifecycleOwner) {
@@ -108,6 +112,13 @@ class UserListFragment : BaseFragment(), AddContactListener {
                 RequestState.Failed,
                 RequestState.Finished -> (activity as MainActivity).dismissLoadingDialog()
                 else -> {}
+            }
+        }
+
+        viewModel.showEmptyError.observe(viewLifecycleOwner) {
+            binding.run {
+                rvUserScreen.makeVisibleOrGone(!it)
+                tvError.makeVisibleOrGone(it)
             }
         }
     }

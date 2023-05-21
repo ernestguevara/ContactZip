@@ -35,6 +35,10 @@ class AddContactDialogFragment :
         return builder.create()
     }
 
+    fun setListener(addContactListener: AddContactListener) {
+        this.addContactListener = addContactListener
+    }
+
     private fun setupViews() {
         binding.apply {
             contactEntity?.let { contact ->
@@ -53,7 +57,7 @@ class AddContactDialogFragment :
                 }
 
                 btnConfirm.setOnClickListener {
-                    contact.number = if (etNumber.text.isNullOrEmpty()) {
+                    contact.number = if (!etNumber.text.isNullOrEmpty()) {
                         etNumber.text.toString()
                     } else {
                         null
@@ -64,12 +68,6 @@ class AddContactDialogFragment :
                 }
             }
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        addContactListener = activity as? AddContactListener
     }
 
     override fun onDestroyView() {

@@ -10,7 +10,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ContactEntity(
     @PrimaryKey(autoGenerate = true)
-    val dbId: Int? = null,
     val id: Int? = null,
     var firstName: String? = null,
     var lastName: String? = null,

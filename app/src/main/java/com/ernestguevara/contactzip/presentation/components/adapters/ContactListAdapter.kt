@@ -68,8 +68,18 @@ class ContactListAdapter @Inject constructor(
     }
 
     fun appendData(newData: List<ContactEntity>) {
-        val updatedList = contactList.toMutableList()
-        updatedList.addAll(newData)
-        contactList = updatedList
+        val currentList = differ.currentList.toMutableList()
+
+        // Filter out duplicates from the new data
+        val filteredData = newData.filterNot { newContact ->
+            currentList.any { existingContact ->
+                existingContact.id == newContact.id
+            }
+        }.sortedBy {
+            it.id
+        }
+
+        currentList.addAll(filteredData)
+        differ.submitList(currentList)
     }
 }

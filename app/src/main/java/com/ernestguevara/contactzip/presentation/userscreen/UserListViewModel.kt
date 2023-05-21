@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
+import com.ernestguevara.contactzip.domain.usecase.DbUseCaseGetContactList
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import com.ernestguevara.contactzip.presentation.BaseViewModel
 import com.ernestguevara.contactzip.util.Constants.ERROR_PAGINATION
@@ -14,6 +15,8 @@ import com.ernestguevara.contactzip.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +38,9 @@ class UserListViewModel @Inject constructor(
     private val _refreshValue = MutableLiveData<Boolean>(false)
     val refreshValue: MutableLiveData<Boolean> = _refreshValue
 
+    private val _showEmptyError = MutableLiveData<Boolean>(false)
+    val showEmptyError: MutableLiveData<Boolean> = _showEmptyError
+
     private var queryJob: Job? = null
 
     private var currentPage: Int = STARTING_PAGE
@@ -50,6 +56,7 @@ class UserListViewModel @Inject constructor(
 
             try {
                 val data = apiUseCaseGetUsers.execute(currentPage)
+
                 data.collect { results ->
                     when (results) {
                         is Resource.Success -> {
@@ -58,25 +65,37 @@ class UserListViewModel @Inject constructor(
                                 _getUserValue.value = list
                                 currentPage++
                             }
+                            _showEmptyError.value = false
                         }
 
                         is Resource.Error -> {
                             _state.value = RequestState.Failed
                             results.message?.let {
                                 _getUserError.value = it
-                                _endOfPaginationValue.value = it != ERROR_PAGINATION
+
+                                if (it == ERROR_PAGINATION) {
+                                    //Return the flow collector
+                                    _endOfPaginationValue.value = false
+                                    return@collect
+                                } else {
+                                    _endOfPaginationValue.value = true
+                                }
                             }
 
                             //Check if theres a persistence data
                             results.data?.let {
-                                //Now check if the list already has data
-                                if (_getUserValue.value == null || _refreshValue.value == true) {
-                                    _getUserValue.value = it
-                                }
-                                _endOfPaginationValue.value = false
+                                //Have a persistence data
+
+                                _getUserValue.value = it
+                                _showEmptyError.value = false
                             } ?: run {
-                                _endOfPaginationValue.value = true
+                                //No persistence data
+                                if (_getUserValue.value == null) {
+                                    //Verify if totally empty
+                                    _showEmptyError.value = true
+                                }
                             }
+                            _endOfPaginationValue.value = false
                         }
 
                         is Resource.Loading -> {

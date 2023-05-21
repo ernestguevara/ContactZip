@@ -144,7 +144,6 @@ class ContactListViewModelTest {
         for (i in 1..count) {
             list.add(
                 ContactEntity(
-                    dbId = i,
                     id = i,
                     firstName = "firstName$i",
                     lastName = "lastName$i",

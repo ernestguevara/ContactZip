@@ -2,7 +2,6 @@ package com.ernestguevara.contactzip.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.ernestguevara.contactzip.MainCoroutineRule
-import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
@@ -40,7 +39,8 @@ class UserListViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        mockViewModel = UserListViewModel(apiUseCaseGetUsers, dbUseCaseInsertContact)
+        mockViewModel =
+            UserListViewModel(apiUseCaseGetUsers, dbUseCaseInsertContact)
     }
 
     @Test
