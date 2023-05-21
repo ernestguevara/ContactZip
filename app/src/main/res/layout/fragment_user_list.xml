@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.userscreen.UserListFragment"
-    android:id="@+id/swipe_refresh">
+    android:id="@+id/swipe_refresh"
+    android:background="@color/white">
     
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_user_screen"
@@ -16,6 +17,15 @@
         android:clipToPadding="false"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_error"
+        style="@style/NormalTextView"
+        android:textSize="28sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/label_empty"/>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

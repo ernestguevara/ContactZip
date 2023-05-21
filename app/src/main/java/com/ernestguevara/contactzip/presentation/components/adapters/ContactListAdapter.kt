@@ -41,7 +41,6 @@ class ContactListAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contactItem = contactList[position]
-//        Timber.d("ernesthor24 onBindViewHolder: ${Gson().toJson(contactItem)}")
         holder.binding.apply {
             contactItem.run {
                 glide.load(avatar)

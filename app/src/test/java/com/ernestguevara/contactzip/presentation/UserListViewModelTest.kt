@@ -2,6 +2,7 @@ package com.ernestguevara.contactzip.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.ernestguevara.contactzip.MainCoroutineRule
+import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
@@ -48,8 +49,8 @@ class UserListViewModelTest {
         val response = flowOf(
             Resource.Success(
                 listOf(
-                    UserModel(1, "fn", "ln", "url", "test@email.com", true),
-                    UserModel(2, "fn2", "ln2", "url2", "test2@email.com", true)
+                    UserModel(1, "fn", "ln", "url", "test@email.com"),
+                    UserModel(2, "fn2", "ln2", "url2", "test2@email.com")
                 )
             )
         )

@@ -7,6 +7,15 @@
     <string name="label_users">People You May Know</string>
     <string name="label_contact">Contact List</string>
     <string name="label_loading">Loading…</string>
+    <string name="label_add">Add Contact</string>
+    <string name="label_name">Name</string>
+    <string name="label_email">Email</string>
+    <string name="label_phone">Phone Number</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_confirm">Confirm</string>
+
+    <string name="label_empty">No Data Found, Swipe to Reload…</string>
+
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

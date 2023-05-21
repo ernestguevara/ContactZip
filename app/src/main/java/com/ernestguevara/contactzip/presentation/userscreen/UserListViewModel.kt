@@ -2,6 +2,7 @@ package com.ernestguevara.contactzip.presentation.userscreen
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
@@ -55,9 +56,6 @@ class UserListViewModel @Inject constructor(
                             _state.value = RequestState.Finished
                             results.data?.let { list ->
                                 _getUserValue.value = list
-                                list.forEach { user ->
-                                    dbUseCaseInsertContact.execute(user.toContactEntity())
-                                }
                                 currentPage++
                             }
                         }
@@ -94,6 +92,10 @@ class UserListViewModel @Inject constructor(
             }
             _refreshValue.value = false
         }
+    }
+
+    fun addContact(contactEntity: ContactEntity) = viewModelScope.launch {
+        dbUseCaseInsertContact.execute(contactEntity)
     }
 
     fun resetPagination() {
