@@ -6,6 +6,7 @@ import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import com.ernestguevara.contactzip.presentation.BaseViewModel
+import com.ernestguevara.contactzip.util.Constants.STARTING_PAGE
 import com.ernestguevara.contactzip.util.RequestState
 import com.ernestguevara.contactzip.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,9 +28,13 @@ class UserListViewModel @Inject constructor(
 
     private var queryJob: Job? = null
 
-    var currentPage: Int = 1
+    var currentPage: Int = STARTING_PAGE
 
-    fun getUsers() {
+    init {
+        getUsers()
+    }
+
+    fun getUsers(page: Int = STARTING_PAGE) {
         queryJob?.cancel()
         queryJob = viewModelScope.launch {
             _state.value = RequestState.Loading

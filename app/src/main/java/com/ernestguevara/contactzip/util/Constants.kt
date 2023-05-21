@@ -3,6 +3,7 @@ package com.ernestguevara.contactzip.util
 object Constants {
 
     const val DB_NAME = "contact_db"
+    const val STARTING_PAGE = 1
     const val PAGE_SIZE = 10
 
     const val ERROR_HTTP = "An error occurred while processing your request. Please check your network connection and try again later."
