@@ -8,6 +8,7 @@ import com.ernestguevara.contactzip.domain.repository.ContactRepository
 import com.ernestguevara.contactzip.util.Constants.ERROR_GENERIC
 import com.ernestguevara.contactzip.util.Constants.ERROR_HTTP
 import com.ernestguevara.contactzip.util.Constants.ERROR_IO
+import com.ernestguevara.contactzip.util.Constants.ERROR_PAGINATION
 import com.ernestguevara.contactzip.util.Constants.PAGE_SIZE
 import com.ernestguevara.contactzip.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +33,11 @@ class ContactRepositoryImpl @Inject constructor(
 
         try {
             val result = apiService.getUsers(page, PAGE_SIZE)
-            emit(Resource.Success(result.userDto.map { it.dtoToModel() }))
+            if (result.totalPages >= result.page) {
+                emit(Resource.Success(result.userDto.map { it.dtoToModel() }))
+            } else {
+                emit(Resource.Error(message = ERROR_PAGINATION))
+            }
         } catch (e: HttpException) {
             emit(Resource.Error(message = ERROR_HTTP))
         } catch (e: IOException) {

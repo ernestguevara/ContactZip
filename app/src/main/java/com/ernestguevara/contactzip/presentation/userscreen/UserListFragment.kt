@@ -29,6 +29,10 @@ class UserListFragment : BaseFragment() {
     @Inject
     lateinit var contactAdapter: ContactListAdapter
 
+    private lateinit var mLayoutManager: LinearLayoutManager
+    private var isLoading = false
+    private var shouldPaginate = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,8 +45,10 @@ class UserListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getUsers(STARTING_PAGE)
+            contactAdapter.contactList = emptyList()
+            viewModel.resetPagination()
         }
+
         setupRv()
         observeViewModel()
 
@@ -53,22 +59,42 @@ class UserListFragment : BaseFragment() {
 
     private fun setupRv() = binding.rvUserScreen.apply {
         adapter = contactAdapter
-        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        mLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        layoutManager = mLayoutManager
+
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val visibleItemCount = mLayoutManager.childCount
+                val totalItemCount = mLayoutManager.itemCount
+                val firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition()
+                if (dy > 0 && !isLoading && shouldPaginate && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0) {
+                    // Load more data
+                    viewModel.getUsers()
+                }
+            }
+        })
     }
 
     private fun observeViewModel() {
         viewModel.getUserValue.observe(viewLifecycleOwner) { list ->
             Timber.i("ernesthor24 observe ${Gson().toJson(list)}")
             if (!list.isNullOrEmpty()) {
-                contactAdapter.contactList = list.map {
+                contactAdapter.appendData(list.map {
                     it.toEntity()
-                }
+                })
+
                 binding.swipeRefresh.isRefreshing = false
             }
         }
 
         viewModel.getUserError.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.endOfPaginationValue.observe(viewLifecycleOwner) {
+            shouldPaginate = it
         }
     }
 

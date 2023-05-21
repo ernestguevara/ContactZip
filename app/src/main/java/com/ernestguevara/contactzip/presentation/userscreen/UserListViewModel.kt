@@ -6,10 +6,12 @@ import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import com.ernestguevara.contactzip.presentation.BaseViewModel
+import com.ernestguevara.contactzip.util.Constants.ERROR_PAGINATION
 import com.ernestguevara.contactzip.util.Constants.STARTING_PAGE
 import com.ernestguevara.contactzip.util.RequestState
 import com.ernestguevara.contactzip.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,15 +28,18 @@ class UserListViewModel @Inject constructor(
     private val _getUserError = MutableLiveData<String>()
     val getUserError: MutableLiveData<String> = _getUserError
 
+    private val _endOfPaginationValue = MutableLiveData<Boolean>()
+    val endOfPaginationValue: MutableLiveData<Boolean> = _endOfPaginationValue
+
     private var queryJob: Job? = null
 
-    var currentPage: Int = STARTING_PAGE
+    private var currentPage: Int = STARTING_PAGE
 
     init {
         getUsers()
     }
 
-    fun getUsers(page: Int = STARTING_PAGE) {
+    fun getUsers() {
         queryJob?.cancel()
         queryJob = viewModelScope.launch {
             _state.value = RequestState.Loading
@@ -50,6 +55,7 @@ class UserListViewModel @Inject constructor(
                                 list.forEach { user ->
                                     dbUseCaseInsertContact.execute(user.toEntity())
                                 }
+                                currentPage++
                             }
                         }
 
@@ -57,6 +63,7 @@ class UserListViewModel @Inject constructor(
                             _state.value = RequestState.Failed
                             results.message?.let {
                                 _getUserError.value = it
+                                _endOfPaginationValue.postValue(it != ERROR_PAGINATION)
                             }
                         }
 
@@ -65,10 +72,19 @@ class UserListViewModel @Inject constructor(
                         }
                     }
                 }
+            } catch (e: CancellationException) {
+                //Do nothing cancel just cancels the job
             } catch (e: Exception) {
                 _state.value = RequestState.Failed
                 _getUserError.value = e.localizedMessage
             }
         }
     }
+
+    fun resetPagination() {
+        currentPage = STARTING_PAGE
+        _endOfPaginationValue.postValue(true)
+        getUsers()
+    }
 }
+

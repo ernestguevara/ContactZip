@@ -43,7 +43,7 @@ class ContactListAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contactItem = contactList[position]
-        Timber.d("ernesthor24 onBindViewHolder: ${Gson().toJson(contactItem)}")
+//        Timber.d("ernesthor24 onBindViewHolder: ${Gson().toJson(contactItem)}")
         holder.binding.apply {
             contactItem.run {
                 glide.load(avatar)
@@ -68,5 +68,11 @@ class ContactListAdapter @Inject constructor(
 
     fun setItemClickListener(listener: (ContactEntity) -> Unit) {
         onItemClickListener = listener
+    }
+
+    fun appendData(newData: List<ContactEntity>) {
+        val updatedList = contactList.toMutableList()
+        updatedList.addAll(newData)
+        contactList = updatedList
     }
 }
