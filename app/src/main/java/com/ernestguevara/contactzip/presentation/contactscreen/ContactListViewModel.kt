@@ -8,6 +8,8 @@ import com.ernestguevara.contactzip.domain.usecase.DbUseCaseGetContactList
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import com.ernestguevara.contactzip.presentation.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,10 +20,9 @@ class ContactListViewModel @Inject constructor(
     private val dbUseCaseGetContactList: DbUseCaseGetContactList
 ) : BaseViewModel() {
 
-
-    private val _getContactListValue = MutableLiveData<List<ContactEntity>>(emptyList())
-    val getContactListValue: MutableLiveData<List<ContactEntity>> = _getContactListValue
-
+    init {
+        getContactList()
+    }
 
     fun insertContact(contactEntity: ContactEntity) = viewModelScope.launch {
         dbUseCaseInsertContact.execute(contactEntity)

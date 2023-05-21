@@ -41,7 +41,6 @@ class ContactListAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contactItem = contactList[position]
-//        Timber.d("ernesthor24 onBindViewHolder: ${Gson().toJson(contactItem)}")
         holder.binding.apply {
             contactItem.run {
                 glide.load(avatar)
@@ -69,8 +68,18 @@ class ContactListAdapter @Inject constructor(
     }
 
     fun appendData(newData: List<ContactEntity>) {
-        val updatedList = contactList.toMutableList()
-        updatedList.addAll(newData)
-        contactList = updatedList
+        val currentList = differ.currentList.toMutableList()
+
+        // Filter out duplicates from the new data
+        val filteredData = newData.filterNot { newContact ->
+            currentList.any { existingContact ->
+                existingContact.id == newContact.id
+            }
+        }.sortedBy {
+            it.id
+        }
+
+        currentList.addAll(filteredData)
+        differ.submitList(currentList)
     }
 }

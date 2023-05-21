@@ -39,7 +39,8 @@ class UserListViewModelTest {
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        mockViewModel = UserListViewModel(apiUseCaseGetUsers, dbUseCaseInsertContact)
+        mockViewModel =
+            UserListViewModel(apiUseCaseGetUsers, dbUseCaseInsertContact)
     }
 
     @Test
@@ -48,8 +49,8 @@ class UserListViewModelTest {
         val response = flowOf(
             Resource.Success(
                 listOf(
-                    UserModel(1, "fn", "ln", "url", "test@email.com", true),
-                    UserModel(2, "fn2", "ln2", "url2", "test2@email.com", true)
+                    UserModel(1, "fn", "ln", "url", "test@email.com"),
+                    UserModel(2, "fn2", "ln2", "url2", "test2@email.com")
                 )
             )
         )
