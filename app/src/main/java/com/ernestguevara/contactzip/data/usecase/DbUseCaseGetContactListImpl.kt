@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class DbUseCaseGetContactListImpl @Inject constructor(private val contactRepository: ContactRepository) :
     DbUseCaseGetContactList {
-    override fun execute(isLocal: Boolean): Flow<List<ContactEntity>> {
-        return contactRepository.getContactList(isLocal)
+    override fun execute(): Flow<List<ContactEntity>> {
+        return contactRepository.getContactList()
     }
 }

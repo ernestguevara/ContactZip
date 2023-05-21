@@ -2,7 +2,6 @@ package com.ernestguevara.contactzip.data.usecase
 
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.repository.ContactRepository
-import com.ernestguevara.contactzip.domain.usecase.DbUseCaseGetContactList
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import javax.inject.Inject
 

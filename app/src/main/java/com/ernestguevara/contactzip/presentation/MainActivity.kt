@@ -9,18 +9,20 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ernestguevara.contactzip.R
 import com.ernestguevara.contactzip.databinding.ActivityMainBinding
+import com.ernestguevara.contactzip.presentation.components.LoadingDialog
 import com.ernestguevara.contactzip.presentation.components.disableTooltip
 import com.ernestguevara.contactzip.presentation.userscreen.UserListViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainActivityListener {
 
     private val userListViewModel: UserListViewModel by viewModels()
 
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var loadingDialog: LoadingDialog
 
     lateinit var navController: NavController
     lateinit var bottomNavigationView: BottomNavigationView
@@ -32,16 +34,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userListViewModel.getUsers()
-
         bottomNavigationView = binding.navView
 
         navController = findNavController(R.id.nav_host_fragment_activity_main)
         bottomNavigationView.setupWithNavController(navController)
         bottomNavigationView.disableTooltip()
 
-        userListViewModel.getUserValue.observe(this) {
-            Timber.i("ernesthor24 ${it}")
-        }
+        loadingDialog = LoadingDialog(this)
+    }
+
+    override fun setToolbarTitle(title: String) {
+        binding.toolbarTitle.text = title
+    }
+
+    override fun showLoadingDialog() {
+        loadingDialog.show()
+    }
+
+    override fun dismissLoadingDialog() {
+        loadingDialog.dismiss()
     }
 }

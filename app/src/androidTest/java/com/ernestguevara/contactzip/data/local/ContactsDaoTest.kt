@@ -90,19 +90,52 @@ class ContactsDaoTest {
         assertThat(result).hasSize(3)
     }
 
+    /*
+    User Persistence Area
+     */
     @Test
-    fun testGetStoredOnline() = runBlockingTest {
+    fun testInsertUsers() = runBlockingTest {
         //Prepare data
-        val contact = provideContact(3, false)
-        contact.forEach {
-            dao.insertContact(it)
-        }
+        val userList = provideUser(5)
 
-        //Get database data and set to false
-        val result = collectContactFlow(this, dao.getAllContacts(false))
+        //Insert to database
+        dao.insertUsers(userList)
 
-        //Assert that expected value
-        assertThat(result).hasSize(3)
+        //Get database data
+        val result = dao.getUsers()
+
+        //Assert
+        assertThat(result).isEqualTo(userList)
+    }
+
+    @Test
+    fun testDeleteUsers() = runBlockingTest {
+        //Prepare data
+        val userList = provideUser(5)
+        dao.insertUsers(userList)
+
+        //Delete database data
+        dao.deleteUsers()
+
+        //Get database data
+        val result = dao.getUsers()
+
+        //Assert
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun getUserList() = runBlockingTest {
+        //Prepare data
+        val userList = provideUser(5)
+        dao.insertUsers(userList)
+
+
+        //Get database data
+        val result = dao.getUsers()
+
+        //Assert
+        assertThat(result).hasSize(5)
     }
 
     //Create reusable async parsing
@@ -126,7 +159,7 @@ class ContactsDaoTest {
     }
 
     //Create a dynamic entity provider
-    private fun provideContact(count: Int, isLocallyStored: Boolean = true): List<ContactEntity> {
+    private fun provideContact(count: Int): List<ContactEntity> {
         val list = mutableListOf<ContactEntity>()
         for (i in 1..count) {
             list.add(
@@ -137,8 +170,25 @@ class ContactsDaoTest {
                     lastName = "lastName$i",
                     avatar = "avatar$i",
                     email = "email$i",
-                    number = "number$i",
-                    isLocallyStored = isLocallyStored
+                    number = "number$i"
+                )
+            )
+        }
+
+        return list
+    }
+
+    //Create a dynamic entity provider
+    private fun provideUser(count: Int): List<UserEntity> {
+        val list = mutableListOf<UserEntity>()
+        for (i in 1..count) {
+            list.add(
+                UserEntity(
+                    id = i,
+                    firstName = "firstName$i",
+                    lastName = "lastName$i",
+                    avatar = "avatar$i",
+                    email = "email$i"
                 )
             )
         }

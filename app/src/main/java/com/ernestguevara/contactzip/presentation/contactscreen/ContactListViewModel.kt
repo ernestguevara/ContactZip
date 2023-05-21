@@ -31,8 +31,8 @@ class ContactListViewModel @Inject constructor(
         dbUseCaseDeleteContact.execute(contactEntity)
     }
 
-    fun getContactList(isLocallyStored: Boolean = true) = viewModelScope.launch {
-        dbUseCaseGetContactList.execute(isLocallyStored)
+    fun getContactList() = viewModelScope.launch {
+        dbUseCaseGetContactList.execute()
             .collect { result ->
                 _getContactListValue.postValue(result)
             }

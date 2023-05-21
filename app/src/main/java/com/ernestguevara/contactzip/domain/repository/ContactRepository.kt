@@ -16,5 +16,5 @@ interface ContactRepository {
      */
     suspend fun insertContactsToDb(contactEntity: ContactEntity)
     suspend fun deleteContactFromDb(contactEntity: ContactEntity)
-    fun getContactList(isLocal: Boolean): Flow<List<ContactEntity>>
+    fun getContactList(): Flow<List<ContactEntity>>
 }

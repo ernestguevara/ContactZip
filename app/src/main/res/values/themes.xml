@@ -3,7 +3,7 @@
     <style name="Theme.ContactZip" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/bluePrimary</item>
-        <item name="colorPrimaryVariant">@color/bluePrimary</item>
+        <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/blueDark</item>

@@ -3,7 +3,6 @@ package com.ernestguevara.contactzip.data.usecase
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.repository.ContactRepository
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseDeleteContact
-import com.ernestguevara.contactzip.domain.usecase.DbUseCaseGetContactList
 import javax.inject.Inject
 
 class DbUseCaseDeleteContactImpl @Inject constructor(private val contactRepository: ContactRepository) :
