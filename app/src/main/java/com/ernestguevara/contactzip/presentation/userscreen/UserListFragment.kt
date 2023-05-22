@@ -129,4 +129,8 @@ class UserListFragment : BaseFragment(), DialogContactListener {
     override fun onConfirmAction(contactEntity: ContactEntity) {
         viewModel.addContact(contactEntity)
     }
+
+    override fun onDeleteAction(contactEntity: ContactEntity) {
+        //Do nothing
+    }
 }

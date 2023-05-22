@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,7 @@ import com.ernestguevara.contactzip.presentation.components.adapters.ContactList
 import com.ernestguevara.contactzip.presentation.interfaces.DialogContactListener
 import com.ernestguevara.contactzip.presentation.interfaces.ItemContactListener
 import com.ernestguevara.contactzip.util.ContactViewType
-import com.google.gson.Gson
+import com.ernestguevara.contactzip.util.makeVisibleOrGone
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -60,7 +61,12 @@ class ContactListFragment : BaseFragment(), ItemContactListener, DialogContactLi
 
     private fun observeViewModels() {
         contactViewModel.getContactListValue.observe(viewLifecycleOwner) {
-            contactAdapter.appendData(it, true)
+            contactAdapter.updateData(it)
+            binding.run {
+                rvContacts.makeVisibleOrGone(!it.isNullOrEmpty())
+                tvContactError.makeVisibleOrGone(it.isNullOrEmpty())
+            }
+
         }
     }
 
@@ -99,5 +105,18 @@ class ContactListFragment : BaseFragment(), ItemContactListener, DialogContactLi
 
     override fun onConfirmAction(contactEntity: ContactEntity) {
         contactViewModel.insertContact(contactEntity)
+    }
+
+    override fun onDeleteAction(contactEntity: ContactEntity) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setMessage(getString(R.string.message_delete, contactEntity.firstName))
+        builder.setPositiveButton(getString(R.string.label_confirm)) { dialog, which ->
+            contactViewModel.deleteContact(contactEntity)
+        }
+        builder.setNegativeButton(getString(R.string.label_cancel)) { dialog, which ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
     }
 }

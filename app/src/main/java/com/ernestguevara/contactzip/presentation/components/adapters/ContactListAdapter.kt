@@ -143,7 +143,7 @@ class ContactListAdapter @Inject constructor(
         contactItemListener = listener
     }
 
-    fun appendData(newData: List<ContactEntity>, isSortedByName: Boolean = false) {
+    fun appendData(newData: List<ContactEntity>) {
         val currentList = differ.currentList.toMutableList()
 
         // Filter out duplicates from the new data
@@ -151,15 +151,15 @@ class ContactListAdapter @Inject constructor(
             currentList.any { existingContact ->
                 existingContact.id == newContact.id
             }
-        }.sortedBy {
-            if (isSortedByName) {
-                it.firstName
-            } else {
-                it.id.toString()
-            }
         }
 
         currentList.addAll(filteredData)
         differ.submitList(currentList)
+    }
+
+    fun updateData(newList: List<ContactEntity>) {
+        differ.submitList(newList.map {
+            it.copy()
+        })
     }
 }
