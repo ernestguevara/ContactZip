@@ -8,6 +8,7 @@
     <string name="label_contact">Contact List</string>
     <string name="label_loading">Loading…</string>
     <string name="label_add">Add Contact</string>
+    <string name="label_update">Update Contact</string>
     <string name="label_name">Name</string>
     <string name="label_email">Email</string>
     <string name="label_phone">Phone Number</string>
@@ -15,6 +16,7 @@
     <string name="label_confirm">Confirm</string>
 
     <string name="label_empty">No Data Found, Swipe to Reload…</string>
+    <string name="label_empty_contacts">No Contacts</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>

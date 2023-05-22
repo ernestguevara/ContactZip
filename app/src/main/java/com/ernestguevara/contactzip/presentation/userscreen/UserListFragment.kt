@@ -14,17 +14,16 @@ import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.FragmentUserListBinding
 import com.ernestguevara.contactzip.presentation.MainActivity
 import com.ernestguevara.contactzip.presentation.components.AddContactDialogFragment
-import com.ernestguevara.contactzip.presentation.components.AddContactListener
 import com.ernestguevara.contactzip.presentation.components.adapters.ContactListAdapter
+import com.ernestguevara.contactzip.presentation.interfaces.DialogContactListener
+import com.ernestguevara.contactzip.util.ContactViewType
 import com.ernestguevara.contactzip.util.RequestState
 import com.ernestguevara.contactzip.util.makeVisibleOrGone
-import com.ernestguevara.contactzip.util.makeVisibleOrInvisible
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class UserListFragment : BaseFragment(), AddContactListener {
+class UserListFragment : BaseFragment(), DialogContactListener {
 
     private lateinit var binding: FragmentUserListBinding
 
@@ -53,14 +52,15 @@ class UserListFragment : BaseFragment(), AddContactListener {
             viewModel.resetPagination()
         }
 
+        contactAdapter.setInitialViewType(ContactViewType.USER_LIST)
+        contactAdapter.setItemClickListener {
+            val addDialog = AddContactDialogFragment.newInstance(it, getString(R.string.label_add))
+            addDialog.setListener(this)
+            addDialog.show(parentFragmentManager, "contact_dialog")
+        }
+
         setupRv()
         observeViewModel()
-
-        contactAdapter.setItemClickListener {
-            val addDialog = AddContactDialogFragment.newInstance(it)
-            addDialog.setListener(this)
-            addDialog.show(parentFragmentManager, "add_dialog")
-        }
     }
 
     private fun setupRv() = binding.rvUserScreen.apply {
@@ -128,7 +128,7 @@ class UserListFragment : BaseFragment(), AddContactListener {
         setToolbarTitle(getString(R.string.label_users))
     }
 
-    override fun onContactAdded(contactEntity: ContactEntity) {
+    override fun onConfirmAction(contactEntity: ContactEntity) {
         viewModel.addContact(contactEntity)
     }
 }
