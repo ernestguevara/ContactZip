@@ -13,7 +13,6 @@ import com.ernestguevara.contactzip.R
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.FragmentUserListBinding
 import com.ernestguevara.contactzip.presentation.MainActivity
-import com.ernestguevara.contactzip.presentation.components.UserDetailDialogFragment
 import com.ernestguevara.contactzip.presentation.components.adapters.ContactListAdapter
 import com.ernestguevara.contactzip.presentation.interfaces.DialogContactListener
 import com.ernestguevara.contactzip.util.ContactViewType
@@ -95,12 +94,13 @@ class UserListFragment : BaseFragment(), DialogContactListener {
             }
         }
 
-        viewModel.getUserError.observe(viewLifecycleOwner) {
+        viewModel.getUserError.observeEvent(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             binding.swipeRefresh.isRefreshing = false
         }
 
         viewModel.endOfPaginationValue.observe(viewLifecycleOwner) {
+            contactAdapter.showEndResult(!it)
             shouldPaginate = it
         }
 
