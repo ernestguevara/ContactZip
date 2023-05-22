@@ -13,7 +13,7 @@ import com.ernestguevara.contactzip.R
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.FragmentUserListBinding
 import com.ernestguevara.contactzip.presentation.MainActivity
-import com.ernestguevara.contactzip.presentation.components.AddContactDialogFragment
+import com.ernestguevara.contactzip.presentation.components.UserDetailDialogFragment
 import com.ernestguevara.contactzip.presentation.components.adapters.ContactListAdapter
 import com.ernestguevara.contactzip.presentation.interfaces.DialogContactListener
 import com.ernestguevara.contactzip.util.ContactViewType
@@ -54,9 +54,7 @@ class UserListFragment : BaseFragment(), DialogContactListener {
 
         contactAdapter.setInitialViewType(ContactViewType.USER_LIST)
         contactAdapter.setItemClickListener {
-            val addDialog = AddContactDialogFragment.newInstance(it, getString(R.string.label_add))
-            addDialog.setListener(this)
-            addDialog.show(parentFragmentManager, "contact_dialog")
+            showDetailDialogFragment(it, this, getString(R.string.label_add))
         }
 
         setupRv()

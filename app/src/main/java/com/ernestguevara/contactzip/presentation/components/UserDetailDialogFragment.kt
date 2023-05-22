@@ -3,6 +3,7 @@ package com.ernestguevara.contactzip.presentation.components
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.text.Editable
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
@@ -13,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AddContactDialogFragment :
+class UserDetailDialogFragment :
     DialogFragment() {
     private lateinit var binding: DialogAddContactBinding
 
@@ -52,6 +53,9 @@ class AddContactDialogFragment :
                 etEmail.setText("${contact.email}")
 
                 //Request Focus upon init
+                contact.number?.let {
+                    etNumber.text = Editable.Factory.getInstance().newEditable(it)
+                }
                 etNumber.requestFocus()
 
                 //Set button click listeners
@@ -87,8 +91,8 @@ class AddContactDialogFragment :
         fun newInstance(
             contactEntity: ContactEntity,
             title: String,
-        ): AddContactDialogFragment {
-            return AddContactDialogFragment().apply {
+        ): UserDetailDialogFragment {
+            return UserDetailDialogFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(CONTACT_ITEM, contactEntity)
                     putString(DIALOG_TITLE, title)

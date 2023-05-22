@@ -34,7 +34,6 @@
             style="@style/NormalTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FirstName"
             android:textSize="22sp" />
 
 
@@ -43,7 +42,6 @@
             style="@style/NormalTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LastName"
             android:textSize="22sp" />
 
     </LinearLayout>
@@ -61,8 +59,8 @@
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Contact"
             android:textSize="12sp"
+            android:text="@string/label_add"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,7 @@
 package com.ernestguevara.contactzip.presentation.contactscreen
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +13,6 @@ import com.ernestguevara.contactzip.BaseFragment
 import com.ernestguevara.contactzip.R
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.FragmentContactListBinding
-import com.ernestguevara.contactzip.presentation.components.AddContactDialogFragment
 import com.ernestguevara.contactzip.presentation.components.adapters.ContactListAdapter
 import com.ernestguevara.contactzip.presentation.interfaces.DialogContactListener
 import com.ernestguevara.contactzip.presentation.interfaces.ItemContactListener
@@ -20,6 +21,7 @@ import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class ContactListFragment : BaseFragment(), ItemContactListener, DialogContactListener {
@@ -59,7 +61,6 @@ class ContactListFragment : BaseFragment(), ItemContactListener, DialogContactLi
     private fun observeViewModels() {
         contactViewModel.getContactListValue.observe(viewLifecycleOwner) {
             contactAdapter.appendData(it, true)
-            Timber.i("ernesthor24 ${Gson().toJson(it)}")
         }
     }
 
@@ -70,24 +71,33 @@ class ContactListFragment : BaseFragment(), ItemContactListener, DialogContactLi
     }
 
     override fun onItemClick(contactEntity: ContactEntity) {
-        val addDialog = AddContactDialogFragment.newInstance(contactEntity, getString(R.string.label_update))
-        addDialog.setListener(this)
-        addDialog.show(parentFragmentManager, "contact_dialog")
+        showDetailDialogFragment(contactEntity, this, getString(R.string.label_update))
     }
 
     override fun onEmailClick(contactEntity: ContactEntity) {
-        Timber.i("ernesthor24 onEmailClick")
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto:${contactEntity.email}")
+
+        if (context?.let { intent.resolveActivity(it.packageManager) } != null) {
+            startActivity(intent)
+        }
     }
 
     override fun onCallClick(contactEntity: ContactEntity) {
-        Timber.i("ernesthor24 onCallClick")
+        val intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:${contactEntity.number}")
+
+        startActivity(intent)
     }
 
     override fun onMessageClick(contactEntity: ContactEntity) {
-        Timber.i("ernesthor24 onMessageClick")
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("smsto:${contactEntity.number}")
+
+        startActivity(intent)
     }
 
     override fun onConfirmAction(contactEntity: ContactEntity) {
-        Timber.i("ernesthor24 updateItem")
+        contactViewModel.insertContact(contactEntity)
     }
 }
