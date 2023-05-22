@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">ContactZip</string>
+
+    <string name="menu_user">Users</string>
+    <string name="menu_contact">Contacts</string>
+
+    <string name="label_users">People You May Know</string>
+    <string name="label_contact">Contact List</string>
+    <string name="label_loading">Loading…</string>
+    <string name="label_add">Add Contact</string>
+    <string name="label_update">Update Contact</string>
+    <string name="label_name">Name</string>
+    <string name="label_email">Email</string>
+    <string name="label_phone">Phone Number</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_confirm">Confirm</string>
+
+    <string name="message_empty">No Data Found, Swipe to Reload…</string>
+    <string name="message_empty_contacts">No Contacts</string>
+    <string name="message_delete">Are you sure you want to delete %s from your contact?</string>
+    <string name="message_pagination">End of Results</string>
 </resources>
