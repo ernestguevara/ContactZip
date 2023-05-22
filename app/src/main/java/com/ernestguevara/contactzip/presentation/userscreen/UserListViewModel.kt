@@ -5,18 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.model.UserModel
 import com.ernestguevara.contactzip.domain.usecase.ApiUseCaseGetUsers
-import com.ernestguevara.contactzip.domain.usecase.DbUseCaseGetContactList
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import com.ernestguevara.contactzip.presentation.BaseViewModel
 import com.ernestguevara.contactzip.util.Constants.ERROR_PAGINATION
 import com.ernestguevara.contactzip.util.Constants.STARTING_PAGE
 import com.ernestguevara.contactzip.util.RequestState
 import com.ernestguevara.contactzip.util.Resource
+import com.ernestguevara.contactzip.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,8 +27,8 @@ class UserListViewModel @Inject constructor(
     private val _getUserValue = MutableLiveData<List<UserModel>>()
     val getUserValue: MutableLiveData<List<UserModel>> = _getUserValue
 
-    private val _getUserError = MutableLiveData<String>()
-    val getUserError: MutableLiveData<String> = _getUserError
+    private val _getUserError = SingleLiveEvent<String>()
+    val getUserError: SingleLiveEvent<String> = _getUserError
 
     private val _endOfPaginationValue = MutableLiveData<Boolean>()
     val endOfPaginationValue: MutableLiveData<Boolean> = _endOfPaginationValue
@@ -71,13 +69,12 @@ class UserListViewModel @Inject constructor(
                         is Resource.Error -> {
                             _state.value = RequestState.Failed
                             results.message?.let {
-                                _getUserError.value = it
-
                                 if (it == ERROR_PAGINATION) {
                                     //Return the flow collector
                                     _endOfPaginationValue.value = false
                                     return@collect
                                 } else {
+                                    _getUserError.value = it
                                     _endOfPaginationValue.value = true
                                 }
                             }

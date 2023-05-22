@@ -12,7 +12,7 @@
         style="@style/NormalTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_empty_contacts"
+        android:text="@string/message_empty_contacts"
         android:textSize="20sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

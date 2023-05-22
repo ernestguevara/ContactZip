@@ -10,9 +10,11 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.databinding.ItemContactBinding
+import com.ernestguevara.contactzip.databinding.ItemEndPaginationBinding
 import com.ernestguevara.contactzip.databinding.ItemUserBinding
 import com.ernestguevara.contactzip.presentation.interfaces.ItemContactListener
 import com.ernestguevara.contactzip.util.ContactViewType
+import com.ernestguevara.contactzip.util.makeVisibleOrGone
 import com.ernestguevara.contactzip.util.makeVisibleOrInvisible
 import javax.inject.Inject
 
@@ -22,6 +24,7 @@ class ContactListAdapter @Inject constructor(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var viewType: ContactViewType = ContactViewType.USER_LIST
+    private var isFooterVisible: Boolean = false
 
     fun setInitialViewType(viewType: ContactViewType) {
         this.viewType = viewType
@@ -29,6 +32,9 @@ class ContactListAdapter @Inject constructor(
 
     class UserViewHolder(val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root)
     class ContactViewHolder(val binding: ItemContactBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    class FooterViewHolder(val binding: ItemEndPaginationBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     private val diffCallback = object : DiffUtil.ItemCallback<ContactEntity>() {
@@ -48,7 +54,11 @@ class ContactListAdapter @Inject constructor(
         set(value) = differ.submitList(value)
 
     override fun getItemViewType(position: Int): Int {
-        return this.viewType.ordinal
+        return if (position < contactList.size) {
+            viewType.ordinal
+        } else {
+            ContactViewType.FOOTER_VIEW.ordinal
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -62,15 +72,19 @@ class ContactListAdapter @Inject constructor(
                     ItemContactBinding.inflate(LayoutInflater.from(context), parent, false)
                 ContactViewHolder(binding)
             }
+            ContactViewType.FOOTER_VIEW.ordinal -> {
+                val binding =
+                    ItemEndPaginationBinding.inflate(LayoutInflater.from(context), parent, false)
+                FooterViewHolder(binding)
+            }
             else -> throw IllegalArgumentException("Invalid view type: $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val contactItem = contactList[position]
-
         when (holder) {
             is UserViewHolder -> {
+                val contactItem = contactList[position]
                 val binding = holder.binding
                 binding.apply {
                     contactItem.run {
@@ -89,6 +103,7 @@ class ContactListAdapter @Inject constructor(
             }
 
             is ContactViewHolder -> {
+                val contactItem = contactList[position]
                 val binding = holder.binding
                 binding.run {
                     contactItem.run {
@@ -122,13 +137,16 @@ class ContactListAdapter @Inject constructor(
                         }
                     }
                 }
-
+            }
+            is FooterViewHolder -> {
+                val binding = holder.binding
+                binding.llPagination.makeVisibleOrGone(isFooterVisible)
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return contactList.size
+        return contactList.size + if (isFooterVisible) 1 else 0
     }
 
     private var onItemClickListener: ((ContactEntity) -> Unit)? = null
@@ -161,5 +179,10 @@ class ContactListAdapter @Inject constructor(
         differ.submitList(newList.map {
             it.copy()
         })
+    }
+
+    fun showEndResult(isVisible: Boolean) {
+        isFooterVisible = isVisible
+        notifyDataSetChanged()
     }
 }
