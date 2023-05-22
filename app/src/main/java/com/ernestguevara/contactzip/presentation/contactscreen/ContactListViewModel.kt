@@ -1,6 +1,5 @@
 package com.ernestguevara.contactzip.presentation.contactscreen
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.ernestguevara.contactzip.data.local.ContactEntity
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseDeleteContact
@@ -8,8 +7,6 @@ import com.ernestguevara.contactzip.domain.usecase.DbUseCaseGetContactList
 import com.ernestguevara.contactzip.domain.usecase.DbUseCaseInsertContact
 import com.ernestguevara.contactzip.presentation.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
